@@ -185,10 +185,35 @@ public class NineBlockIdenticon extends Identicon {
         int green = (code >> 21) & 0x01f;
         int red = (code >> 27) & 0x01f;
 
+        float[] hsv = new float[3];
+        Color.RGBToHSV (red << 3, green << 3, blue << 3, hsv);
+
+        // default hues to choose from
+        float[] hues = {347.1f, 016.9f, 044.1f, 129.8f,
+                        160.0f, 189.2f, 210.0f, 244.0f,
+                        281.2f, 325.1f, 347.7f, 240.0f};
+
+
+
+        float[] sats = {0.892f, 1.000f, 0.291f, 0.508f,
+                        0.785f, 0.956f, 0.687f, 0.595f,
+                        0.749f, 0.679f, 0.321f, 0.108f};
+
+        float[] vals = {0.800f, 0.780f, 0.459f, 0.471f,
+                        0.510f, 0.537f, 0.639f, 0.784f,
+                        0.686f, 0.635f, 0.537f, 0.471f};
+
+        int j = 0;
+        for (int i = 1; i<12; i++)
+            if (Math.abs(hsv[0]-hues[j]) > Math.abs(hsv[0]-hues[i])) j = i;
+        hsv[0] = hues[j];
+        hsv[1] = sats[j];
+        hsv[2] = vals[j];
+
         // color components are used at top of the range for color difference
         // use white background for now.
         // TODO: support transparency.
-        int strokeColor = Color.rgb(red << 3, green << 3, blue << 3);
+        int strokeColor = Color.HSVToColor(hsv);
 
         // outline shapes with a noticeable color (complementary will do) if
         // shape color and background color are too similar (measured by color
